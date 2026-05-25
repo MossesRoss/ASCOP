@@ -1,0 +1,9 @@
+confluent-kafka
+redis
+psycopg2-binary
+httpx
+asyncio
+python-dotenv
+streamlit
+pandas
+plotly
