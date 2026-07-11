@@ -13,7 +13,7 @@ def delivery_report(err, msg):
         print(f"Message delivered to {msg.topic()} [{msg.partition()}]")
 
 async def produce_market_events(producer):
-    items = ["widget_a", "widget_b"]
+    items = ["Chicken Masala 500g", "Biryani Masala 200g", "Guntur Red Chillies (Raw) - MT"]
     while True:
         item = random.choice(items)
         price_delta = random.uniform(-5.0, 5.0)
@@ -28,7 +28,7 @@ async def produce_market_events(producer):
         await asyncio.sleep(5)
 
 async def produce_inventory_events(producer):
-    items = ["widget_a", "widget_b"]
+    items = ["Chicken Masala 500g", "Biryani Masala 200g"]
     while True:
         item = random.choice(items)
         if random.random() < 0.2:
@@ -62,15 +62,28 @@ async def produce_erp_errors(producer):
         producer.flush()
         print(f"Produced ERP Error Log: {event['raw_log']}")
 
+async def produce_osint_events(producer):
+    await asyncio.sleep(10)  # Fire 10 seconds into the demo
+    event = {
+        "event_type": "Raw_OSINT_Alert",
+        "source": "NOAA_Global_Weather",
+        "raw_log": "SEVERE ALERT: Cyclone formatting in Bay of Bengal. High probability of striking Andhra Pradesh (Guntur region) within 72 hours.",
+        "timestamp": time.time()
+    }
+    producer.produce("erp_logs", json.dumps(event).encode('utf-8'), callback=delivery_report)
+    producer.flush()
+    print(f"Produced OSINT Alert: {event['raw_log']}")
+
 async def main():
     conf = {'bootstrap.servers': KAFKA_BOOTSTRAP_SERVERS}
     producer = Producer(conf)
     
-    print("Starting Ingestion Plane (including SAP error logs)...")
+    print("Starting Ingestion Plane (including SAP error logs and OSINT)...")
     await asyncio.gather(
         produce_market_events(producer),
         produce_inventory_events(producer),
-        produce_erp_errors(producer) # The new ERP error stream
+        produce_erp_errors(producer), # The new ERP error stream
+        produce_osint_events(producer) # The Climate Catastrophe stream
     )
 
 if __name__ == "__main__":

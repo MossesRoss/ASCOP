@@ -53,8 +53,8 @@ def main():
                 deficit = event['deficit_quantity']
                 
                 # Propose a purchase order
-                # Assume unit price for budget calculation
-                unit_price = 100 if item_id == 'widget_a' else 500
+                # Assume unit price for budget calculation based on Aachi Masala SKUs
+                unit_price = 50.00 if "Chicken" in item_id else 150.00
                 total_amount = deficit * unit_price
 
                 proposal = {

@@ -29,8 +29,7 @@ def init_db():
         );
     """)
 
-    # Mock ERP Inventory table
-    cur.execute("""
+cur.execute("""
         CREATE TABLE IF NOT EXISTS erp_inventory (
             item_id TEXT PRIMARY KEY,
             quantity INTEGER NOT NULL,
@@ -39,13 +38,15 @@ def init_db():
         );
     """)
 
-    # Seed some data
+    cur.execute("INSERT INTO erp_inventory (item_id, quantity, price) VALUES ('Chicken Masala 500g', 1000, 50.00) ON CONFLICT DO NOTHING;")
+    cur.execute("INSERT INTO erp_inventory (item_id, quantity, price) VALUES ('Biryani Masala 200g', 500, 150.00) ON CONFLICT DO NOTHING;")
+    cur.execute("INSERT INTO erp_inventory (item_id, quantity, price) VALUES ('Guntur Red Chillies (Raw) - MT', 10, 150000.00) ON CONFLICT DO NOTHING;")
+
     cur.execute("INSERT INTO erp_inventory (item_id, quantity, price) VALUES ('widget_a', 100, 50.00) ON CONFLICT DO NOTHING;")
     cur.execute("INSERT INTO erp_inventory (item_id, quantity, price) VALUES ('widget_b', 20, 150.00) ON CONFLICT DO NOTHING;")
 
     conn.commit()
     cur.close()
-    conn.close()
     print("Database initialized.")
 
 if __name__ == "__main__":
