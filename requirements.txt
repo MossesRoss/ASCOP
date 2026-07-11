@@ -7,3 +7,4 @@ python-dotenv
 streamlit
 pandas
 plotly
+requests
